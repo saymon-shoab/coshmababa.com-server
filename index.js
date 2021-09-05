@@ -3,7 +3,7 @@ const cors = require('cors');
 // const MongoClient = require ('mongodb').MongoClient;
 require('dotenv').config()
 const { MongoClient } = require('mongodb');
-
+const ObjectId = require('mongodb').ObjectId;
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.5h4lz.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
 
@@ -21,7 +21,7 @@ app.get('/', (req, res) => {
 
   const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 client.connect(err => {
-  console.log(err)
+  
   const ProductCollection = client.db("coshmaweb").collection("product");
   const OrderCollection = client.db("coshmaweb").collection("order");
 
@@ -47,6 +47,16 @@ client.connect(err => {
       res.send(result.insertedCount>0)
     })
   })
+
+  app.delete('/delete/:id', (req,res)=>{
+     console.log(req.params.id)
+     ProductCollection.deleteOne({_id: ObjectId (req.params.id)})
+     .then((result)=>{
+       console.log( result)
+     })
+  })
+
+
 });
 
 
